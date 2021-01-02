@@ -42,7 +42,7 @@ function msg() {
 #  elif [ "$(pvesm list $STORAGE --vmid $CTID)" != "" ]; then
 #   pvesm free $ROOTFS
 #  fi
-}
+#}
 function cleanup() {
   popd >/dev/null
   rm -rf $TEMP_DIR
