@@ -1,4 +1,4 @@
-This was forked and modified for LXD running on Ubuntu 20.10 aarch64 RapsberryPi 4 8GB.
+This was forked and modified for LXD running on Ubuntu 20.10 aarch64 RaspberryPi 4 8GB.
 
 # Home Assistant in LXC container (managed by LXD)
 
