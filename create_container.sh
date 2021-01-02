@@ -16,7 +16,7 @@ function error_exit() {
   local REASON="\e[97m${1:-$DEFAULT}\e[39m"
   local FLAG="\e[91m[ERROR] \e[93m$EXIT@$LINE"
   msg "$FLAG $REASON"
-  [ ! -z ${CTID-} ] && cleanup_ctid
+ # [ ! -z ${CTID-} ] && cleanup_ctid
   exit $EXIT
 }
 function warn() {
@@ -33,15 +33,15 @@ function msg() {
   local TEXT="$1"
   echo -e "$TEXT"
 }
-function cleanup_ctid() {
-  if $(pct status $CTID &>/dev/null); then
-    if [ "$(pct status $CTID | awk '{print $2}')" == "running" ]; then
-      pct stop $CTID
-    fi
-    pct destroy $CTID
-  elif [ "$(pvesm list $STORAGE --vmid $CTID)" != "" ]; then
-    pvesm free $ROOTFS
-  fi
+#function cleanup_ctid() {
+#  if $(pct status $CTID &>/dev/null); then
+#    if [ "$(pct status $CTID | awk '{print $2}')" == "running" ]; then
+#      pct stop $CTID
+#    fi
+#    pct destroy $CTID
+#  elif [ "$(pvesm list $STORAGE --vmid $CTID)" != "" ]; then
+#   pvesm free $ROOTFS
+#  fi
 }
 function cleanup() {
   popd >/dev/null
@@ -51,9 +51,9 @@ TEMP_DIR=$(mktemp -d)
 pushd $TEMP_DIR >/dev/null
 
 # Create LXC
-export CTID=$(pvesh get /cluster/nextid)
-export PCT_OSTYPE=debian
-export PCT_OSVERSION=10
+#export CTID=$(pvesh get /cluster/nextid)
+export PCT_OSTYPE=ubuntu
+export PCT_OSVERSION=20.04
 export PCT_DISK_SIZE=4
 export PCT_OPTIONS="
   -cmode shell
@@ -63,16 +63,16 @@ export PCT_OPTIONS="
   -onboot 1
   -tags homeassistant
 "
-bash -c "$(wget -qLO - https://github.com/whiskerz007/proxmox_lxc_create/raw/main/lxc_create.sh)" || exit
+bash -c "$(wget -qLO - https://github.com/thiscantbeserious/lxd_homeassistant_install/raw/main/lxc_create.sh)" || exit
 
 # Detect storage pool type
-STORAGE_TYPE=$(pvesm status -storage $(pct config $CTID | grep rootfs | awk -F ":" '{print $2}') | awk 'NR>1 {print $2}')
-if [ "$STORAGE_TYPE" == "zfspool" ]; then
-  warn "Some addons may not work due to ZFS not supporting 'fallocate'."
-fi
+#STORAGE_TYPE=$(pvesm status -storage $(pct config $CTID | grep rootfs | awk -F ":" '{print $2}') | awk 'NR>1 {print $2}')
+#if [ "$STORAGE_TYPE" == "zfspool" ]; then
+#  warn "Some addons may not work due to ZFS not supporting 'fallocate'."
+#fi
 
 # Download setup script
-REPO="https://github.com/whiskerz007/proxmox_hassio_lxc"
+REPO="https://github.com/thiscantbeserious/lxd_homeassistant_install/"
 wget -qO - ${REPO}/tarball/master | tar -xz --strip-components=1
 
 # Modify LXC permissions to support Docker
@@ -148,8 +148,8 @@ lxc-cmd nm-online -q
 # Create Home Assistant config
 msg "Creating Home Assistant config..."
 HASSIO_CONFIG_PATH=/etc/hassio.json
-HASSIO_DOCKER=homeassistant/amd64-hassio-supervisor
-HASSIO_MACHINE=qemux86-64
+HASSIO_DOCKER=homeassistant/aarch64-hassio-supervisor
+HASSIO_MACHINE=qemuarm-64
 HASSIO_DATA_PATH=/usr/share/hassio
 lxc-cmd bash -c "cat > $HASSIO_CONFIG_PATH <<- EOF
 {
@@ -181,10 +181,10 @@ lxc-cmd sed -i -e "s,%%BINARY_DOCKER%%,/usr/bin/docker,g" \
 lxc-cmd systemctl enable hassio-supervisor.service > /dev/null 2>&1
 
 # Create service to fix Home Assistant boot time check
-msg "Creating service to fix boot time check..."
-pct push $CTID hassio-fix-btime.service /etc/systemd/system/hassio-fix-btime.service
-lxc-cmd mkdir -p ${HASSIO_SUPERVISOR_SERVICE}.wants
-lxc-cmd ln -s /etc/systemd/system/{hassio-fix-btime.service,hassio-supervisor.service.wants/}
+#msg "Creating service to fix boot time check..."
+#pct push $CTID hassio-fix-btime.service /etc/systemd/system/hassio-fix-btime.service
+#lxc-cmd mkdir -p ${HASSIO_SUPERVISOR_SERVICE}.wants
+#lxc-cmd ln -s /etc/systemd/system/{hassio-fix-btime.service,hassio-supervisor.service.wants/}
 
 # Start Home Assistant Supervisor
 msg "Starting Home Assistant..."
@@ -214,7 +214,7 @@ lxc-cmd rm -rf /var/{cache,log}/* /var/lib/apt/lists/*
 ### Finish LXC commands ###
 
 # Get network details
-IP=$(pct exec $CTID ip a s dev eth0 | sed -n '/inet / s/\// /p' | awk '{print $2}')
+#IP=$(pct exec $CTID ip a s dev eth0 | sed -n '/inet / s/\// /p' | awk '{print $2}')
 
 # Show completion message
 info "Successfully created Home Assistant LXC to $CTID."
