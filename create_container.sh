@@ -51,19 +51,11 @@ TEMP_DIR=$(mktemp -d)
 pushd $TEMP_DIR >/dev/null
 
 # Create LXC
-#export CTID=$(pvesh get /cluster/nextid)
-export PCT_OSTYPE=ubuntu
-export PCT_OSVERSION=20.04
-export PCT_DISK_SIZE=4
-export PCT_OPTIONS="
-  -cmode shell
-  -features nesting=1
-  -hostname homeassistant
-  -net0 name=eth0,bridge=vmbr0
-  -onboot 1
-  -tags homeassistant
-"
-bash -c "$(wget -qLO - https://github.com/thiscantbeserious/lxd_homeassistant_install/raw/main/lxc_create.sh)" || exit
+OSTYPE=ubuntu
+OSVERSION=20.04
+INSTANCENAME=homeassistant
+
+lxc launch $OSTYPE:$OSVERSION $INSTANCENAME -c security.privileged=true -c security.nesting=true 
 
 # Detect storage pool type
 #STORAGE_TYPE=$(pvesm status -storage $(pct config $CTID | grep rootfs | awk -F ":" '{print $2}') | awk 'NR>1 {print $2}')
@@ -100,7 +92,7 @@ msg "Starting LXC container..."
 pct start $CTID
 
 ### Begin LXC commands ###
-alias lxc-cmd="lxc-attach -n $CTID --"
+alias lxc-cmd="lxc-attach -n $INSTANCENAME --"
 # Prepare container OS
 msg "Setting up container OS..."
 lxc-cmd dhclient -4
