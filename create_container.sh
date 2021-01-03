@@ -110,85 +110,14 @@ lxc restart $INSTANCENAME
 
 sleep 5
 
-msg "Installing 
+msg "Executing homeassistant supervised-installer..."
 lxc-cmd /bin/bash -c "curl -sSL https://raw.githubusercontent.com/home-assistant/supervised-installer/master/installer.sh | yes | bash -s -- -m qemuarm-64"
     
 sleep 5
 
+msg "Adding proxy port for 8123..."
 lxc config device add $INSTANCENAME web proxy listen=tcp:0.0.0.0:8123 connect=tcp:127.0.0.1:8123
-    
-exit 0
-
-# Create Home Assistant config
-msg "Creating Home Assistant config..."
-HASSIO_CONFIG_PATH=/etc/hassio.json
-HASSIO_DOCKER=homeassistant/aarch64-hassio-supervisor
-HASSIO_MACHINE=qemuarm-64
-HASSIO_DATA_PATH=/usr/share/hassio
-lxc-cmd /bin/bash -c "cat > $HASSIO_CONFIG_PATH <<- EOF
-{
-    \"supervisor\": \"${HASSIO_DOCKER}\",
-    \"machine\": \"${HASSIO_MACHINE}\",
-    \"data\": \"${HASSIO_DATA_PATH}\"
-}
-EOF
-"
-
-# Pull Home Assistant Supervisor image
-msg "Downloading Home Assistant Supervisor container..."
-HASSIO_VERSION=$(lxc-cmd bash -c "curl -s https://version.home-assistant.io/stable.json | jq -e -r '.supervisor'")
-lxc-cmd docker pull "$HASSIO_DOCKER:$HASSIO_VERSION" > /dev/null
-lxc-cmd docker tag "$HASSIO_DOCKER:$HASSIO_VERSION" "$HASSIO_DOCKER:latest" > /dev/null
-
-# Install Home Assistant Supervisor
-msg "Installing Home Assistant Supervisor..."
-HASSIO_SUPERVISOR_PATH=/usr/sbin/hassio-supervisor
-HASSIO_SUPERVISOR_SERVICE=/etc/systemd/system/hassio-supervisor.service
-lxc-cmd bash -c "curl -sSLo $HASSIO_SUPERVISOR_PATH ${HA_URL_BASE}/hassio-supervisor"
-lxc-cmd bash -c "chmod a+x $HASSIO_SUPERVISOR_PATH"
-lxc-cmd bash -c "curl -sSLo $HASSIO_SUPERVISOR_SERVICE ${HA_URL_BASE}/hassio-supervisor.service"
-lxc-cmd sed -i "s,%%HASSIO_CONFIG%%,${HASSIO_CONFIG_PATH},g" $HASSIO_SUPERVISOR_PATH
-lxc-cmd sed -i -e "s,%%BINARY_DOCKER%%,/usr/bin/docker,g" \
-  -e "s,%%SERVICE_DOCKER%%,docker.service,g" \
-  -e "s,%%BINARY_HASSIO%%,${HASSIO_SUPERVISOR_PATH},g" \
-  $HASSIO_SUPERVISOR_SERVICE
-lxc-cmd systemctl enable hassio-supervisor.service > /dev/null 2>&1
-
-# Create service to fix Home Assistant boot time check
-#msg "Creating service to fix boot time check..."
-#pct push $CTID hassio-fix-btime.service /etc/systemd/system/hassio-fix-btime.service
-#lxc-cmd mkdir -p ${HASSIO_SUPERVISOR_SERVICE}.wants
-#lxc-cmd ln -s /etc/systemd/system/{hassio-fix-btime.service,hassio-supervisor.service.wants/}
-
-# Start Home Assistant Supervisor
-msg "Starting Home Assistant..."
-lxc-cmd systemctl start hassio-supervisor.service
-
-# Install 'ha' cli
-msg "Installing the 'ha' cli..."
-lxc-cmd bash -c "curl -sSLo /usr/bin/ha ${HA_URL_BASE}/ha"
-lxc-cmd bash -c "chmod a+x /usr/bin/ha"
-
-# Setup 'ha' cli prompt
-msg "Configuring 'ha' cli prompt..."
-HA_CLI_PATH=/usr/sbin/hassio-cli
-lxc-cmd bash -c "curl -sSLo $HA_CLI_PATH https://github.com/home-assistant/operating-system/raw/dev/buildroot-external/rootfs-overlay/usr/sbin/hassos-cli"
-lxc-cmd sed -i 's,/bin/ash,/bin/bash,g' $HA_CLI_PATH
-lxc-cmd sed -i '/# Run CLI container/,/^fi/d' $HA_CLI_PATH
-lxc-cmd sed -i 's,^\(mesg n.*\)$,# \1,' /root/.profile
-lxc-cmd chmod a+x $HA_CLI_PATH
-lxc-cmd usermod --shell $HA_CLI_PATH root
-lxc-cmd bash -c "echo -e '\ncd $HASSIO_DATA_PATH' >> /root/.bashrc"
-
-# Cleanup container
-msg "Cleanup..."
-lxc-cmd apt-get autoremove >/dev/null
-lxc-cmd apt-get autoclean >/dev/null
-lxc-cmd rm -rf /var/{cache,log}/* /var/lib/apt/lists/*
-### Finish LXC commands ###
-
-# Get network details
-#IP=$(pct exec $CTID ip a s dev eth0 | sed -n '/inet / s/\// /p' | awk '{print $2}')
-
+ 
 # Show completion message
-info "Successfully created Home Assistant LXC named $INSTANCENAME."
+info "Successfully created Home Assistant LXC named $INSTANCENAME which is accessible on Port 8123 from your hos
+t."
