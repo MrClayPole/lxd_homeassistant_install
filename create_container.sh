@@ -33,16 +33,6 @@ function msg() {
   local TEXT="$1"
   echo -e "$TEXT"
 }
-#function cleanup_ctid() {
-#  if $(pct status $CTID &>/dev/null); then
-#    if [ "$(pct status $CTID | awk '{print $2}')" == "running" ]; then
-#      pct stop $CTID
-#    fi
-#    pct destroy $CTID
-#  elif [ "$(pvesm list $STORAGE --vmid $CTID)" != "" ]; then
-#   pvesm free $ROOTFS
-#  fi
-#}
 function cleanup() {
   popd >/dev/null
   rm -rf $TEMP_DIR
@@ -57,35 +47,26 @@ INSTANCENAME=homeassistant
 
 lxc launch $OSTYPE:$OSVERSION $INSTANCENAME -c security.privileged=true -c security.nesting=true 
 
-# Detect storage pool type
-#STORAGE_TYPE=$(pvesm status -storage $(pct config $CTID | grep rootfs | awk -F ":" '{print $2}') | awk 'NR>1 {print $2}')
-#if [ "$STORAGE_TYPE" == "zfspool" ]; then
-#  warn "Some addons may not work due to ZFS not supporting 'fallocate'."
-#fi
-
 # Download setup script
 REPO="https://github.com/thiscantbeserious/lxd_homeassistant_install/"
 wget -qO - ${REPO}/tarball/master | tar -xz --strip-components=1
 
 # Modify LXC permissions to support Docker
-LXC_CONFIG=/etc/pve/lxc/${CTID}.conf
-cat <<EOF >> $LXC_CONFIG
+alias lxc-set-config="lxc config set $INSTANCENAME "
+cat <<EOF | lxc-set-config lxc.raw -
 lxc.cgroup.devices.allow: a
 lxc.cap.drop:
 EOF
 
 # Load modules for Docker before starting LXC
-cat << 'EOF' >> $LXC_CONFIG
+cat <<EOF | lxc-set-config lxc.raw -
 lxc.hook.pre-start: sh -ec 'for module in aufs overlay; do modinfo $module; $(lsmod | grep -Fq $module) || modprobe $module; done;'
 EOF
 
-# Set autodev hook to enable access to devices in container
-bash ./set_autodev_hook.sh $CTID
-
 # Set container timezone to match host
-cat << 'EOF' >> $LXC_CONFIG
-lxc.hook.mount: sh -c 'ln -fs $(readlink /etc/localtime) ${LXC_ROOTFS_MOUNT}/etc/localtime'
-EOF
+#cat <<EOF | lxc-set-config lxc.raw -
+#lxc.hook.mount: sh -c 'ln -fs $(readlink /etc/localtime) ${LXC_ROOTFS_MOUNT}/etc/localtime'
+#EOF
 
 # Setup container for Home Assistant
 msg "Starting LXC container..."
@@ -209,12 +190,4 @@ lxc-cmd rm -rf /var/{cache,log}/* /var/lib/apt/lists/*
 #IP=$(pct exec $CTID ip a s dev eth0 | sed -n '/inet / s/\// /p' | awk '{print $2}')
 
 # Show completion message
-info "Successfully created Home Assistant LXC to $CTID."
-msg "
-
-Home Assistant is reachable by going to the following URLs.
-
-      http://${IP}:8123
-      http://${HOSTNAME}.local:8123
-
-"
+info "Successfully created Home Assistant LXC named $INSTANCENAME."
