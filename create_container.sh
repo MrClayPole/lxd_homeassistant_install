@@ -93,7 +93,7 @@ lxc-cmd apt-get -qqy install \
 
 # Install Docker
 msg "Installing Docker..."
-lxc-cmd sudo --login --user ubuntu bash -ilc "sh <(curl -sSL https://get.docker.com) &>/dev/null"
+lxc-cmd /bin/bash -ilc "sh <(curl -sSL https://get.docker.com) &>/dev/null"
 
 # Configure Docker configuration
 msg "Configuring Docker..."
