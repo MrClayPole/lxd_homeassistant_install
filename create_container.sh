@@ -90,10 +90,6 @@ lxc-cmd apt-get -qqy upgrade &>/dev/null
 msg "Installing prerequisites..."
 lxc-cmd apt-get -qqy install \
     avahi-daemon curl jq network-manager xterm &>/dev/null
-    
-lxc-cmd sudo --login --user ubuntu bash -ilc "curl -sL https://raw.githubusercontent.com/home-assistant/supervised-installer/master/installer.sh | bash -s -- -m qemuarm-64"
-    
-exit 0    
 
 # Install Docker
 msg "Installing Docker..."
@@ -115,12 +111,16 @@ lxc-cmd sed -i 's/type\:veth/interface-name\:veth\*/' $NETWORKMANAGER_CONFIG_PAT
 NETWORKMANAGER_PROFILE_PATH='/etc/NetworkManager/system-connections/default'
 lxc-cmd wget -qLO $NETWORKMANAGER_PROFILE_PATH ${HA_URL_BASE}/system-connection-default
 lxc-cmd chmod 600 $NETWORKMANAGER_PROFILE_PATH
-NETWORKMANAGER_CONNECTION=$(lxc-cmd nmcli connection | grep eth0 | awk -F "  " '{print $1}')
-lxc-cmd nmcli connection down "$NETWORKMANAGER_CONNECTION" > /dev/null
-lxc-cmd nmcli connection delete "$NETWORKMANAGER_CONNECTION" > /dev/null
+#NETWORKMANAGER_CONNECTION=$(lxc-cmd nmcli connection | grep eth0 | awk -F "  " '{print $1}')
+#lxc-cmd nmcli connection down "$NETWORKMANAGER_CONNECTION" > /dev/null
+#lxc-cmd nmcli connection delete "$NETWORKMANAGER_CONNECTION" > /dev/null
 lxc-cmd dhclient -r &> /dev/null
 lxc-cmd systemctl restart NetworkManager
 lxc-cmd nm-online -q
+
+lxc-cmd sudo --login --user ubuntu bash -ilc "curl -sL https://raw.githubusercontent.com/home-assistant/supervised-installer/master/installer.sh | bash -s -- -m qemuarm-64"
+    
+exit 0
 
 # Create Home Assistant config
 msg "Creating Home Assistant config..."
