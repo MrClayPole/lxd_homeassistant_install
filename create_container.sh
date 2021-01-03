@@ -73,7 +73,7 @@ EOF
 #pct start $CTID
 
 ### Begin LXC commands ###
-alias lxc-cmd="lxc exec $INSTANCENAME --"
+alias lxc-cmd="lxc exec $INSTANCENAME -- sudo "
 # Prepare container OS
 msg "Setting up container OS..."
 lxc-cmd dhclient -4
