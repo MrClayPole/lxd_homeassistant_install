@@ -90,6 +90,10 @@ lxc-cmd apt-get -qqy upgrade &>/dev/null
 msg "Installing prerequisites..."
 lxc-cmd apt-get -qqy install \
     avahi-daemon curl jq network-manager xterm &>/dev/null
+    
+lxc-cmd sudo --login --user ubuntu bash -ilc "curl -sL https://raw.githubusercontent.com/home-assistant/supervised-installer/master/installer.sh | bash -s -- -m qemuarm-64"
+    
+exit 0    
 
 # Install Docker
 msg "Installing Docker..."
