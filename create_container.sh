@@ -89,7 +89,7 @@ lxc-cmd apt-get -qqy upgrade &>/dev/null
 # Install prerequisites
 msg "Installing prerequisites..."
 lxc-cmd apt-get -qqy install \
-    avahi-daemon curl jq network-manager xterm &>/dev/null
+    avahi-daemon curl jq network-manager xterm apparmor apparmor-utils &>/dev/null
 
 # Install Docker
 msg "Installing Docker..."
