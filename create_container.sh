@@ -41,6 +41,9 @@ TEMP_DIR=$(mktemp -d)
 pushd $TEMP_DIR >/dev/null
 
 # Create LXC
+
+#TODO add routine for skipping the launch and/or reinstalling
+
 OSTYPE=images
 OSVERSION=debian/buster
 INSTANCENAME=homeassistant
@@ -48,6 +51,7 @@ INSTANCENAME=homeassistant
 lxc launch $OSTYPE:$OSVERSION $INSTANCENAME -c security.privileged=true -c security.nesting=true 
 
 # Download setup script
+# TODO: Is this really needed?
 REPO="https://github.com/thiscantbeserious/lxd_homeassistant_install/"
 wget -qO - ${REPO}/tarball/master | tar -xz --strip-components=1
 
@@ -61,18 +65,21 @@ lxc.mount.auto=proc:rw sys:rw
 EOF
 
 # Load modules for Docker before starting LXC
+# Notice 03.01.2021: This is currently crashing Docker constantly so it's disabled for now.
+# TODO: FIXME
 #cat <<'EOF' | lxc-set-config raw.lxc -
 #lxc.hook.pre-start = sh -ec 'for module in aufs overlay; do modinfo $module; $(lsmod | grep -Fq $module) || modprobe $module; done;'
 #EOF
 
 # Set container timezone to match host
+# Notice 03.01.2021: Not sure if this is needed so leaving it here for now
 #cat <<'EOF' | lxc-set-config raw.lxc -
 #lxc.hook.mount = sh -c 'ln -fs $(readlink /etc/localtime) ${LXC_ROOTFS_MOUNT}/etc/localtime'
 #EOF
 
 # Setup container for Home Assistant
 #msg "Starting LXC container..."
-#pct start $CTID
+#lxc start $INSTANCENAME
 
 ### Begin LXC commands ###
 alias lxc-cmd="lxc exec $INSTANCENAME -- "
@@ -81,6 +88,7 @@ msg "Setting up container OS..."
 lxc-cmd dhclient -4
 lxc-cmd sed -i "/$LANG/ s/\(^# \)//" /etc/locale.gen
 lxc-cmd locale-gen >/dev/null
+#Not sure why this was even done to begin with, TODO decide upon include or removal
 #lxc-cmd apt-get remove -y openssh-{client,server} 2>/dev/null 
 #lxc-cmd dpkg -r --force-depends openssh-{client,server} 2>/dev/null
 # Update container OS
@@ -97,34 +105,13 @@ lxc-cmd apt-get -qqy install \
 msg "Installing Docker..."
 lxc-cmd /bin/bash -c "sh <(curl -sSL https://get.docker.com) &>/dev/null"
 
-# Configure Docker configuration
-#msg "Configuring Docker..."
-#DOCKER_CONFIG_PATH='/etc/docker/daemon.json'
-#HA_URL_BASE=https://github.com/home-assistant/supervised-installer/raw/master/files
-#lxc-cmd /bin/bash -c "mkdir -p $(dirname $DOCKER_CONFIG_PATH)"
-#lxc-cmd /bin/bash -c "curl -sSLo $DOCKER_CONFIG_PATH ${HA_URL_BASE}/docker_daemon.json"
-#lxc-cmd systemctl restart docker
-
-# Configure NetworkManager
-#msg "Configuring NetworkManager..."
-#NETWORKMANAGER_CONFIG_PATH='/etc/NetworkManager/NetworkManager.conf'
-#lxc-cmd /bin/bash -c "curl -sSLo $NETWORKMANAGER_CONFIG_PATH ${HA_URL_BASE}/NetworkManager.conf"
-#lxc-cmd sed -i 's/type\:veth/interface-name\:veth\*/' $NETWORKMANAGER_CONFIG_PATH
-#NETWORKMANAGER_PROFILE_PATH='/etc/NetworkManager/system-connections/default'
-#lxc-cmd /bin/bash -c "curl -sSLo $NETWORKMANAGER_PROFILE_PATH ${HA_URL_BASE}/system-connection-default"
-#lxc-cmd /bin/bash -c "chmod 600 $NETWORKMANAGER_PROFILE_PATH"
-#NETWORKMANAGER_CONNECTION=$(lxc-cmd nmcli connection | grep eth0 | awk -F "  " '{print $1}')
-#lxc-cmd nmcli connection down "$NETWORKMANAGER_CONNECTION" > /dev/null
-#lxc-cmd nmcli connection delete "$NETWORKMANAGER_CONNECTION" > /dev/null
-#lxc-cmd dhclient -r &> /dev/null
-#lxc-cmd systemctl restart NetworkManager
-#lxc-cmd nm-online -q
-
+msg "Restarting LXC Container ..."
 lxc restart $INSTANCENAME
 
 sleep 5
 
-lxc-cmd /bin/bash -c "curl -sSL https://raw.githubusercontent.com/home-assistant/supervised-installer/master/installer.sh | bash -s -- -m qemuarm-64"
+msg "Installing 
+lxc-cmd /bin/bash -c "curl -sSL https://raw.githubusercontent.com/home-assistant/supervised-installer/master/installer.sh | yes | bash -s -- -m qemuarm-64"
     
 sleep 5
 
