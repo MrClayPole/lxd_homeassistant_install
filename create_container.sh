@@ -54,18 +54,18 @@ wget -qO - ${REPO}/tarball/master | tar -xz --strip-components=1
 # Modify LXC permissions to support Docker
 alias lxc-set-config="lxc config set $INSTANCENAME"
 cat <<EOF | lxc-set-config raw.lxc -
-lxc.cgroup.devices.allow: a
-lxc.cap.drop:
+lxc.cgroup.devices.allow = a
+lxc.cap.drop =
 EOF
 
 # Load modules for Docker before starting LXC
 cat <<EOF | lxc-set-config raw.lxc -
-lxc.hook.pre-start: sh -ec 'for module in aufs overlay; do modinfo $module; $(lsmod | grep -Fq $module) || modprobe $module; done;'
+lxc.hook.pre-start = sh -ec 'for module in aufs overlay; do modinfo $module; $(lsmod | grep -Fq $module) || modprobe $module; done;'
 EOF
 
 # Set container timezone to match host
 #cat <<EOF | lxc-set-config raw.lxc -
-#lxc.hook.mount: sh -c 'ln -fs $(readlink /etc/localtime) ${LXC_ROOTFS_MOUNT}/etc/localtime'
+#lxc.hook.mount = sh -c 'ln -fs $(readlink /etc/localtime) ${LXC_ROOTFS_MOUNT}/etc/localtime'
 #EOF
 
 # Setup container for Home Assistant
