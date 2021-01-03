@@ -69,8 +69,8 @@ EOF
 #EOF
 
 # Setup container for Home Assistant
-msg "Starting LXC container..."
-pct start $CTID
+#msg "Starting LXC container..."
+#pct start $CTID
 
 ### Begin LXC commands ###
 alias lxc-cmd="lxc-attach -n $INSTANCENAME --"
