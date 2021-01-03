@@ -120,9 +120,9 @@ lxc-cmd /bin/bash -c "sh <(curl -sSL https://get.docker.com) &>/dev/null"
 #lxc-cmd systemctl restart NetworkManager
 #lxc-cmd nm-online -q
 
-#lxc-cmd /bin/bash -c "curl -sSL https://raw.githubusercontent.com/home-assistant/supervised-installer/master/installer.sh | bash -s -- -m qemuarm-64"
+lxc-cmd /bin/bash -c "curl -sSL https://raw.githubusercontent.com/home-assistant/supervised-installer/master/installer.sh | bash -s -- -m qemuarm-64"
     
-#exit 0
+exit 0
 
 # Create Home Assistant config
 msg "Creating Home Assistant config..."
