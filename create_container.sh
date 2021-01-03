@@ -96,31 +96,31 @@ msg "Installing Docker..."
 lxc-cmd /bin/bash -c "sh <(curl -sSL https://get.docker.com) &>/dev/null"
 
 # Configure Docker configuration
-msg "Configuring Docker..."
-DOCKER_CONFIG_PATH='/etc/docker/daemon.json'
-HA_URL_BASE=https://github.com/home-assistant/supervised-installer/raw/master/files
-lxc-cmd /bin/bash -c "mkdir -p $(dirname $DOCKER_CONFIG_PATH)"
-lxc-cmd /bin/bash -c "curl -sSLo $DOCKER_CONFIG_PATH ${HA_URL_BASE}/docker_daemon.json"
-lxc-cmd systemctl restart docker
+#msg "Configuring Docker..."
+#DOCKER_CONFIG_PATH='/etc/docker/daemon.json'
+#HA_URL_BASE=https://github.com/home-assistant/supervised-installer/raw/master/files
+#lxc-cmd /bin/bash -c "mkdir -p $(dirname $DOCKER_CONFIG_PATH)"
+#lxc-cmd /bin/bash -c "curl -sSLo $DOCKER_CONFIG_PATH ${HA_URL_BASE}/docker_daemon.json"
+#lxc-cmd systemctl restart docker
 
 # Configure NetworkManager
-msg "Configuring NetworkManager..."
-NETWORKMANAGER_CONFIG_PATH='/etc/NetworkManager/NetworkManager.conf'
-lxc-cmd /bin/bash -c "curl -sSLo $NETWORKMANAGER_CONFIG_PATH ${HA_URL_BASE}/NetworkManager.conf"
+#msg "Configuring NetworkManager..."
+#NETWORKMANAGER_CONFIG_PATH='/etc/NetworkManager/NetworkManager.conf'
+#lxc-cmd /bin/bash -c "curl -sSLo $NETWORKMANAGER_CONFIG_PATH ${HA_URL_BASE}/NetworkManager.conf"
 #lxc-cmd sed -i 's/type\:veth/interface-name\:veth\*/' $NETWORKMANAGER_CONFIG_PATH
-NETWORKMANAGER_PROFILE_PATH='/etc/NetworkManager/system-connections/default'
-lxc-cmd /bin/bash -c "curl -sSLo $NETWORKMANAGER_PROFILE_PATH ${HA_URL_BASE}/system-connection-default"
-lxc-cmd /bin/bash -c "chmod 600 $NETWORKMANAGER_PROFILE_PATH"
-NETWORKMANAGER_CONNECTION=$(lxc-cmd nmcli connection | grep eth0 | awk -F "  " '{print $1}')
-lxc-cmd nmcli connection down "$NETWORKMANAGER_CONNECTION" > /dev/null
-lxc-cmd nmcli connection delete "$NETWORKMANAGER_CONNECTION" > /dev/null
-lxc-cmd dhclient -r &> /dev/null
-lxc-cmd systemctl restart NetworkManager
-lxc-cmd nm-online -q
+#NETWORKMANAGER_PROFILE_PATH='/etc/NetworkManager/system-connections/default'
+#lxc-cmd /bin/bash -c "curl -sSLo $NETWORKMANAGER_PROFILE_PATH ${HA_URL_BASE}/system-connection-default"
+#lxc-cmd /bin/bash -c "chmod 600 $NETWORKMANAGER_PROFILE_PATH"
+#NETWORKMANAGER_CONNECTION=$(lxc-cmd nmcli connection | grep eth0 | awk -F "  " '{print $1}')
+#lxc-cmd nmcli connection down "$NETWORKMANAGER_CONNECTION" > /dev/null
+#lxc-cmd nmcli connection delete "$NETWORKMANAGER_CONNECTION" > /dev/null
+#lxc-cmd dhclient -r &> /dev/null
+#lxc-cmd systemctl restart NetworkManager
+#lxc-cmd nm-online -q
 
-#lxc-cmd /bin/bash -c "curl -sSL https://raw.githubusercontent.com/home-assistant/supervised-installer/master/installer.sh | bash -s -- -m qemuarm-64"
+lxc-cmd /bin/bash -c "curl -sSL https://raw.githubusercontent.com/home-assistant/supervised-installer/master/installer.sh | bash -s -- -m qemuarm-64"
     
-#exit 0
+exit 0
 
 # Create Home Assistant config
 msg "Creating Home Assistant config..."
@@ -147,9 +147,9 @@ lxc-cmd docker tag "$HASSIO_DOCKER:$HASSIO_VERSION" "$HASSIO_DOCKER:latest" > /d
 msg "Installing Home Assistant Supervisor..."
 HASSIO_SUPERVISOR_PATH=/usr/sbin/hassio-supervisor
 HASSIO_SUPERVISOR_SERVICE=/etc/systemd/system/hassio-supervisor.service
-lxc-cmd wget -qLO $HASSIO_SUPERVISOR_PATH ${HA_URL_BASE}/hassio-supervisor
-lxc-cmd chmod a+x $HASSIO_SUPERVISOR_PATH
-lxc-cmd wget -qLO $HASSIO_SUPERVISOR_SERVICE ${HA_URL_BASE}/hassio-supervisor.service
+lxc-cmd bash -c "curl -sSLo $HASSIO_SUPERVISOR_PATH ${HA_URL_BASE}/hassio-supervisor"
+lxc-cmd bash -c "chmod a+x $HASSIO_SUPERVISOR_PATH"
+lxc-cmd bash -c "curl -sSLo $HASSIO_SUPERVISOR_SERVICE ${HA_URL_BASE}/hassio-supervisor.service"
 lxc-cmd sed -i "s,%%HASSIO_CONFIG%%,${HASSIO_CONFIG_PATH},g" $HASSIO_SUPERVISOR_PATH
 lxc-cmd sed -i -e "s,%%BINARY_DOCKER%%,/usr/bin/docker,g" \
   -e "s,%%SERVICE_DOCKER%%,docker.service,g" \
@@ -169,8 +169,8 @@ lxc-cmd systemctl start hassio-supervisor.service
 
 # Install 'ha' cli
 msg "Installing the 'ha' cli..."
-lxc-cmd wget -qLO /usr/bin/ha ${HA_URL_BASE}/ha
-lxc-cmd chmod a+x /usr/bin/ha
+lxc-cmd bash -c "curl -sSLo /usr/bin/ha ${HA_URL_BASE}/ha"
+lxc-cmd bash -c "chmod a+x /usr/bin/ha"
 
 # Setup 'ha' cli prompt
 msg "Configuring 'ha' cli prompt..."
