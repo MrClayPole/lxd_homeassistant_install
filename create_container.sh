@@ -119,5 +119,4 @@ msg "Adding proxy port for 8123..."
 lxc config device add $INSTANCENAME web proxy listen=tcp:0.0.0.0:8123 connect=tcp:127.0.0.1:8123
  
 # Show completion message
-info "Successfully created Home Assistant LXC named $INSTANCENAME which is accessible on Port 8123 from your hos
-t."
+info "Successfully created Home Assistant LXC named $INSTANCENAME which is accessible on Port 8123 from your host."
