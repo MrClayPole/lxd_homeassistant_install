@@ -122,7 +122,13 @@ lxc-cmd /bin/bash -c "sh <(curl -sSL https://get.docker.com) &>/dev/null"
 
 lxc restart $INSTANCENAME
 
+sleep 5
+
 lxc-cmd /bin/bash -c "curl -sSL https://raw.githubusercontent.com/home-assistant/supervised-installer/master/installer.sh | bash -s -- -m qemuarm-64"
+    
+sleep 5
+
+lxc config device add $INSTANCENAME web proxy listen=tcp:0.0.0.0:8123 connect=tcp:127.0.0.1:8123
     
 exit 0
 
