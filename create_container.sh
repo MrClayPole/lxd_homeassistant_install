@@ -56,6 +56,8 @@ alias lxc-set-config="lxc config set $INSTANCENAME"
 cat <<'EOF' | lxc-set-config raw.lxc -
 lxc.cgroup.devices.allow = a
 lxc.cap.drop =
+lxc.apparmor.profile=unconfined
+lxc.mount.auto=proc:rw sys:rw
 EOF
 
 # Load modules for Docker before starting LXC
@@ -118,9 +120,9 @@ lxc-cmd /bin/bash -c "sh <(curl -sSL https://get.docker.com) &>/dev/null"
 #lxc-cmd systemctl restart NetworkManager
 #lxc-cmd nm-online -q
 
-lxc-cmd /bin/bash -c "curl -sSL https://raw.githubusercontent.com/home-assistant/supervised-installer/master/installer.sh | bash -s -- -m qemuarm-64"
+#lxc-cmd /bin/bash -c "curl -sSL https://raw.githubusercontent.com/home-assistant/supervised-installer/master/installer.sh | bash -s -- -m qemuarm-64"
     
-exit 0
+#exit 0
 
 # Create Home Assistant config
 msg "Creating Home Assistant config..."
@@ -175,7 +177,7 @@ lxc-cmd bash -c "chmod a+x /usr/bin/ha"
 # Setup 'ha' cli prompt
 msg "Configuring 'ha' cli prompt..."
 HA_CLI_PATH=/usr/sbin/hassio-cli
-lxc-cmd wget -qLO $HA_CLI_PATH https://github.com/home-assistant/operating-system/raw/dev/buildroot-external/rootfs-overlay/usr/sbin/hassos-cli
+lxc-cmd bash -c "curl -sSLo $HA_CLI_PATH https://github.com/home-assistant/operating-system/raw/dev/buildroot-external/rootfs-overlay/usr/sbin/hassos-cli"
 lxc-cmd sed -i 's,/bin/ash,/bin/bash,g' $HA_CLI_PATH
 lxc-cmd sed -i '/# Run CLI container/,/^fi/d' $HA_CLI_PATH
 lxc-cmd sed -i 's,^\(mesg n.*\)$,# \1,' /root/.profile
