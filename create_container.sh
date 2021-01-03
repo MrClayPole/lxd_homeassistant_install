@@ -41,8 +41,8 @@ TEMP_DIR=$(mktemp -d)
 pushd $TEMP_DIR >/dev/null
 
 # Create LXC
-OSTYPE=ubuntu
-OSVERSION=20.04
+OSTYPE=debian
+OSVERSION=10
 INSTANCENAME=homeassistant
 
 lxc launch $OSTYPE:$OSVERSION $INSTANCENAME -c security.privileged=true -c security.nesting=true 
@@ -73,7 +73,7 @@ EOF
 #pct start $CTID
 
 ### Begin LXC commands ###
-alias lxc-cmd="lxc exec $INSTANCENAME -- sudo "
+alias lxc-cmd="lxc exec $INSTANCENAME -- "
 # Prepare container OS
 msg "Setting up container OS..."
 lxc-cmd dhclient -4
@@ -107,7 +107,7 @@ lxc-cmd systemctl restart docker
 msg "Configuring NetworkManager..."
 NETWORKMANAGER_CONFIG_PATH='/etc/NetworkManager/NetworkManager.conf'
 lxc-cmd wget -qLO $NETWORKMANAGER_CONFIG_PATH ${HA_URL_BASE}/NetworkManager.conf
-lxc-cmd sed -i 's/type\:veth/interface-name\:veth\*/' $NETWORKMANAGER_CONFIG_PATH
+#lxc-cmd sed -i 's/type\:veth/interface-name\:veth\*/' $NETWORKMANAGER_CONFIG_PATH
 NETWORKMANAGER_PROFILE_PATH='/etc/NetworkManager/system-connections/default'
 lxc-cmd wget -qLO $NETWORKMANAGER_PROFILE_PATH ${HA_URL_BASE}/system-connection-default
 lxc-cmd chmod 600 $NETWORKMANAGER_PROFILE_PATH
