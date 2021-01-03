@@ -118,7 +118,7 @@ lxc-cmd dhclient -r &> /dev/null
 lxc-cmd systemctl restart NetworkManager
 lxc-cmd nm-online -q
 
-lxc-cmd sudo --login --user ubuntu bash -ilc "curl -sL https://raw.githubusercontent.com/home-assistant/supervised-installer/master/installer.sh | bash -s -- -m qemuarm-64"
+lxc-cmd /bin/bash -ilc "curl -sL https://raw.githubusercontent.com/home-assistant/supervised-installer/master/installer.sh | bash -s -- -m qemuarm-64"
     
 exit 0
 
@@ -128,7 +128,7 @@ HASSIO_CONFIG_PATH=/etc/hassio.json
 HASSIO_DOCKER=homeassistant/aarch64-hassio-supervisor
 HASSIO_MACHINE=qemuarm-64
 HASSIO_DATA_PATH=/usr/share/hassio
-lxc-cmd bash -c "cat > $HASSIO_CONFIG_PATH <<- EOF
+lxc-cmd /bin/bash -c "cat > $HASSIO_CONFIG_PATH <<- EOF
 {
     \"supervisor\": \"${HASSIO_DOCKER}\",
     \"machine\": \"${HASSIO_MACHINE}\",
