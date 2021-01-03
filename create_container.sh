@@ -52,7 +52,7 @@ REPO="https://github.com/thiscantbeserious/lxd_homeassistant_install/"
 wget -qO - ${REPO}/tarball/master | tar -xz --strip-components=1
 
 # Modify LXC permissions to support Docker
-alias lxc-set-config="lxc config set $INSTANCENAME "
+alias lxc-set-config="lxc config set $INSTANCENAME"
 cat <<EOF | lxc-set-config raw.lxc -
 lxc.cgroup.devices.allow: a
 lxc.cap.drop:
