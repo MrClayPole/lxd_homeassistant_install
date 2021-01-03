@@ -111,16 +111,16 @@ lxc-cmd /bin/bash -c "curl -sSLo $NETWORKMANAGER_CONFIG_PATH ${HA_URL_BASE}/Netw
 NETWORKMANAGER_PROFILE_PATH='/etc/NetworkManager/system-connections/default'
 lxc-cmd /bin/bash -c "curl -sSLo $NETWORKMANAGER_PROFILE_PATH ${HA_URL_BASE}/system-connection-default"
 lxc-cmd /bin/bash -c "chmod 600 $NETWORKMANAGER_PROFILE_PATH"
-#NETWORKMANAGER_CONNECTION=$(lxc-cmd nmcli connection | grep eth0 | awk -F "  " '{print $1}')
-#lxc-cmd nmcli connection down "$NETWORKMANAGER_CONNECTION" > /dev/null
-#lxc-cmd nmcli connection delete "$NETWORKMANAGER_CONNECTION" > /dev/null
+NETWORKMANAGER_CONNECTION=$(lxc-cmd nmcli connection | grep eth0 | awk -F "  " '{print $1}')
+lxc-cmd nmcli connection down "$NETWORKMANAGER_CONNECTION" > /dev/null
+lxc-cmd nmcli connection delete "$NETWORKMANAGER_CONNECTION" > /dev/null
 lxc-cmd dhclient -r &> /dev/null
 lxc-cmd systemctl restart NetworkManager
 lxc-cmd nm-online -q
 
-lxc-cmd /bin/bash -c "curl -sSL https://raw.githubusercontent.com/home-assistant/supervised-installer/master/installer.sh | bash -s -- -m qemuarm-64"
+#lxc-cmd /bin/bash -c "curl -sSL https://raw.githubusercontent.com/home-assistant/supervised-installer/master/installer.sh | bash -s -- -m qemuarm-64"
     
-exit 0
+#exit 0
 
 # Create Home Assistant config
 msg "Creating Home Assistant config..."
