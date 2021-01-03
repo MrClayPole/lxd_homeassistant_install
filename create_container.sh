@@ -41,8 +41,8 @@ TEMP_DIR=$(mktemp -d)
 pushd $TEMP_DIR >/dev/null
 
 # Create LXC
-OSTYPE=debian
-OSVERSION=10
+OSTYPE=images
+OSVERSION=debian/buster
 INSTANCENAME=homeassistant
 
 lxc launch $OSTYPE:$OSVERSION $INSTANCENAME -c security.privileged=true -c security.nesting=true 
