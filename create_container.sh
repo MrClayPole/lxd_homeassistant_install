@@ -61,9 +61,9 @@ lxc.mount.auto=proc:rw sys:rw
 EOF
 
 # Load modules for Docker before starting LXC
-cat <<'EOF' | lxc-set-config raw.lxc -
-lxc.hook.pre-start = sh -ec 'for module in aufs overlay; do modinfo $module; $(lsmod | grep -Fq $module) || modprobe $module; done;'
-EOF
+#cat <<'EOF' | lxc-set-config raw.lxc -
+#lxc.hook.pre-start = sh -ec 'for module in aufs overlay; do modinfo $module; $(lsmod | grep -Fq $module) || modprobe $module; done;'
+#EOF
 
 # Set container timezone to match host
 #cat <<'EOF' | lxc-set-config raw.lxc -
