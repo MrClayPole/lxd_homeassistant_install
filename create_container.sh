@@ -111,7 +111,7 @@ lxc restart $INSTANCENAME
 sleep 5
 
 msg "Executing homeassistant supervised-installer..."
-lxc-cmd /bin/bash -c "curl -sSL https://raw.githubusercontent.com/home-assistant/supervised-installer/master/installer.sh | yes | bash -s -- -m qemuarm-64"
+lxc-cmd /bin/bash -c "curl -sSL https://raw.githubusercontent.com/home-assistant/supervised-installer/master/installer.sh | printf 'y\n' | bash -s -- -m qemuarm-64"
     
 sleep 5
 
