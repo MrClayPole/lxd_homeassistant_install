@@ -1,4 +1,16 @@
-This was forked and modified for LXD running on Ubuntu 20.10 aarch64 RaspberryPi 4 8GB.
+## Intend of fork / explanation:
+
+This was forked and modified for LXD running on Ubuntu 20.10 aarch64 RaspberryPi 4 8GB executing the current upstream supervisor install with all dependencies, also exposing the port (8123) on the host.
+
+## Current state:
+
+This is hardcoded to aarch64 for now. You need to modify the script (simply changing the machine-type) for other architectures. It currently completes successfully - select N upon install to keep network connectivity after reboot (overwriting will stop eth0).However after stoping and restarting the LXC container some docker containers (DNS, Multicast) itself seem to exit.
+
+This has still to be solved. Maybe it's a better idea to rewrite HassOS Buildroot base to something like https://github.com/Linutronix/elbe to get a minimal Debian system as the base where you can properly install other packages in addition to Hass.io. LXD/LXC would be nice to have, especially for the snapshots (that are more reliable then those that are inbuild, especially since it stops/freezes the container before snapshotting and restarts it afterwards - so no Database corruption will happen) but it could be that Docker is just to much pain on LXC. Will have to verify ...
+
+----
+
+Original Readme:
 
 # Home Assistant in LXC container (managed by LXD)
 
