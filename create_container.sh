@@ -61,15 +61,11 @@ cat <<'EOF' | lxc-set-config raw.lxc -
 lxc.cgroup.devices.allow = a
 lxc.cap.drop =
 lxc.apparmor.profile=unconfined
-lxc.mount.auto=proc:rw sys:rw
 EOF
+#lxc.mount.auto=proc:rw sys:rw
 
 # Load modules for Docker before starting LXC
-# Notice 03.01.2021: This is currently crashing Docker constantly so it's disabled for now.
-# TODO: FIXME
-#cat <<'EOF' | lxc-set-config raw.lxc -
-#lxc.hook.pre-start = sh -ec 'for module in aufs overlay; do modinfo $module; $(lsmod | grep -Fq $module) || modprobe $module; done;'
-#EOF
+lxc-set-config linux.kernel_modules aufs,overlay
 
 # Set container timezone to match host
 # Notice 03.01.2021: Not sure if this is needed so leaving it here for now
