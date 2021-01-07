@@ -1,6 +1,8 @@
 ## Intend of fork / explanation:
 
-This was forked and modified for LXD running on Ubuntu 20.10 aarch64 RaspberryPi 4 8GB executing the current upstream supervisor install with all dependencies, also exposing the port (8123) on the host.
+This was forked and modified for LXD running on Ubuntu Server 20.10 aarch64 on a RaspberryPi 4 8GB executing the current upstream supervisor install with all dependencies, also exposing the port (8123) on the host. So basically a complete install with any system that runs LXD (tested with the snapstore install).
+
+This is not aimed specifically at Proxmox but a generic install.
 
 ## Current state:
 
