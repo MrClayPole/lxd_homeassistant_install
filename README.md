@@ -2,7 +2,7 @@
 
 The orginal script was aimed to be installed on Proxmox exlcusively - this was forked and modified for LXD on any Debian based OS. It is currently being used on an Ubuntu Server 20.10 aarch64 host on a RaspberryPi 4 8GB executing the current upstream supervisor install with all dependencies, also exposing the port (8123) on the host.
 
-TLDR: This is not aimed just at Proxmox but a generic debian based install (Ubuntu Server still recommended, don't ask for support otherwise).
+TLDR: This is not aimed just at Proxmox but a generic debian based install (Ubuntu Server still recommended).
 
 ## Current state:
 
