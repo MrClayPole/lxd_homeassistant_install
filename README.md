@@ -6,7 +6,7 @@ TLDR: This is not aimed just at Proxmox but a generic debian based install (only
 
 ## Current state:
 
-**Adjust MACHINE_TYPE manually before install** ... currently its hardcoded to 'qemuarm-64' and there's no prompt since this is still in development and not finished. It currently completes successfully - select N upon install to keep network connectivity after reboot (overwriting will remove eth0 and hence the internet connectivity). 
+**Adjust MACHINE_TYPE manually before install** ... currently its hardcoded to 'qemuarm-64' and there's no prompt since this is still in development and not finished. It currently completes successfully - **select N upon install to keep network connectivity after reboot (overwriting will remove eth0 and hence the internet connectivity)**. 
 
 Maybe it's a better idea to rewrite HassOS Buildroot base to something like https://github.com/Linutronix/elbe to get a minimal Debian system as the base where you can properly install other packages in addition to Hass.io ...
 
