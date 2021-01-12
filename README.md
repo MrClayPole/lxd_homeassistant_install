@@ -1,8 +1,8 @@
-## Intend of fork / explanation:
+# Home Assistant install with LXD (tested on Ubuntu Server)
 
-This was forked and modified for LXD running on Ubuntu Server 20.10 aarch64 on a RaspberryPi 4 8GB executing the current upstream supervisor install with all dependencies, also exposing the port (8123) on the host. So basically a complete install with any system that runs LXD (tested with the snapstore install).
+The orginal script was aimed to be installed on Proxmox exlcusively - this was forked and modified for LXD on any Debian based OS. It is currently being used on an Ubuntu Server 20.10 aarch64 host on a RaspberryPi 4 8GB executing the current upstream supervisor install with all dependencies, also exposing the port (8123) on the host.
 
-This is not aimed specifically at Proxmox but a generic install.
+TLDR: This is not aimed just at Proxmox but a generic debian based install (Ubuntu Server still recommended, don't ask for support otherwise).
 
 ## Current state:
 
@@ -18,8 +18,4 @@ Edit: Or maybe this is just a simple restart policy issue. Maybe a systemd servi
     
 ----
 
-Original Readme:
-
-# Home Assistant in LXC container (managed by LXD)
-
-See here: https://github.com/whiskerz007/proxmox_hassio_lxc/blob/master/README.md
+Original Readme - see here: https://github.com/whiskerz007/proxmox_hassio_lxc/blob/master/README.md
