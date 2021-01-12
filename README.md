@@ -1,6 +1,6 @@
 # Home Assistant install with LXD (tested on Ubuntu Server)
 
-Forked from whiskerz007/proxmox_hassio_lxc. The orginal script was aimed to be installed on Proxmox exclusively - this was modified for LXD on any Debian based OS. It is currently being used on an **Ubuntu Server 20.10 aarch64 host on a RaspberryPi 4 8GB** executing the current upstream supervisor install with all dependencies, also exposing the port (8123) on the host.
+Forked from [whiskerz007/proxmox_hassio_lxc](https://github.com/whiskerz007/proxmox_hassio_lxc). The orginal script was aimed to be installed on Proxmox exclusively - this was modified for LXD on any Debian based OS. It is currently being used on an **Ubuntu Server 20.10 aarch64 host on a RaspberryPi 4 8GB** executing the current upstream supervisor install with all dependencies, also exposing the port (8123) on the host.
 
 TLDR: This is not aimed just at Proxmox but a generic debian based install (only tested on Ubuntu Server right now).
 
