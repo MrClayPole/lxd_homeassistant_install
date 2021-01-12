@@ -14,11 +14,12 @@ This has still to be solved. Maybe it's a better idea to rewrite HassOS Buildroo
 
 ## Known issues:
 
-- DNS and Multicast are currently not working: https://community.home-assistant.io/t/running-hassos-as-an-lxd-lxc-virtual-machine/227643/6?u=thiscantbeserious
+- DNS and Multicast are currently not working: 
+https://community.home-assistant.io/t/running-hassos-as-an-lxd-lxc-virtual-machine/227643/6?u=thiscantbeserious
 - Could be that there's a container restart policy issue. Try running the following from within 'homeassistant' after the initial setup:
-
+    ```
     docker update --restart unless-stopped $(docker ps -q)
-    
+    ``` 
 ----
 
 Original Readme - see here: https://github.com/whiskerz007/proxmox_hassio_lxc/blob/master/README.md
