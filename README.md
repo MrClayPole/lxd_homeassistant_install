@@ -12,9 +12,9 @@ Maybe it's a better idea to rewrite HassOS Buildroot base to something like http
 
 ## Known issues:
 
-- DNS and Multicast are currently not working: 
-https://community.home-assistant.io/t/running-hassos-as-an-lxd-lxc-virtual-machine/227643/6?u=thiscantbeserious
-- Could be that there's a container restart policy issue. Try running the following from within 'homeassistant' after the initial setup:
+- DNS and Multicast are currently not working, [see this post in the forums](https://community.home-assistant.io/t/running-hassos-as-an-lxd-lxc-virtual-machine/227643/6?u=thiscantbeserious).
+
+- Could be that there's a container restart policy issue.
     ```
     docker update --restart unless-stopped $(docker ps -q)
     ``` 
