@@ -40,7 +40,7 @@ function cleanup() {
 TEMP_DIR=$(mktemp -d)
 pushd $TEMP_DIR >/dev/null
 
-# Create LXC
+# Create initial LXC image
 
 #TODO add routine for skipping the launch and/or reinstalling
 
@@ -50,11 +50,6 @@ INSTANCENAME=homeassistant
 MACHINE_TYPE=qemuarm-64
 
 lxc launch $OSTYPE:$OSVERSION $INSTANCENAME -c security.privileged=true -c security.nesting=true 
-
-# Download setup script
-# TODO: Is this really needed?
-REPO="https://github.com/thiscantbeserious/lxd_homeassistant_install/"
-wget -qO - ${REPO}/tarball/master | tar -xz --strip-components=1
 
 # Modify LXC permissions to support Docker
 alias lxc-set-config="lxc config set $INSTANCENAME"
