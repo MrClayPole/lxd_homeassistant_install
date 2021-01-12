@@ -4,9 +4,10 @@ Forked from [whiskerz007/proxmox_hassio_lxc](https://github.com/whiskerz007/prox
 
 TLDR: This is not aimed just at Proxmox but a generic debian based install (only tested on Ubuntu Server right now).
 
-## Current state:
+## Current state / how-to:
 
-**Adjust MACHINE_TYPE manually before install** ... currently its hardcoded to 'qemuarm-64' and there's no prompt since this is still in development and not finished. It currently completes successfully - **select N upon install to keep network connectivity after reboot (overwriting will remove eth0 and hence the internet connectivity)**. 
+1. **Adjust MACHINE_TYPE manually before install if you install it on x86_64** (it defaults to qemuarm-64 there's currently no prompt since this is still in development)
+2. **select N upon install to keep network connectivity after reboot** (overwriting will remove eth0 and hence the internet connectivity) 
 
 Maybe it's a better idea to rewrite HassOS Buildroot base to something like https://github.com/Linutronix/elbe to get a minimal Debian system as the base where you can properly install other packages in addition to Hass.io ...
 
