@@ -12,7 +12,9 @@ However after stopping and restarting the LXC container some docker containers (
 
 This has still to be solved. Maybe it's a better idea to rewrite HassOS Buildroot base to something like https://github.com/Linutronix/elbe to get a minimal Debian system as the base where you can properly install other packages in addition to Hass.io. LXD/LXC would be nice to have, especially for the snapshots (that are more reliable then those that are inbuild, especially since it stops/freezes the container before snapshotting and restarts it afterwards - so no Database corruption will happen) but it could be that Docker is just to much pain on LXC (I've already included the overlay kernel module for the container, maybe there are some others missing). Will have to verify ...
 
-Edit: Or maybe this is just a simple restart policy issue.
+Edit: Or maybe this is just a simple restart policy issue. Try running the following from within the 'homeassistant' container:
+
+    docker update --restart unless-stopped $(docker ps -q)
 
 ----
 
