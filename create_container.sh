@@ -47,6 +47,7 @@ pushd $TEMP_DIR >/dev/null
 OSTYPE=images
 OSVERSION=debian/buster
 INSTANCENAME=homeassistant
+MACHINE_TYPE=qemuarm-64
 
 lxc launch $OSTYPE:$OSVERSION $INSTANCENAME -c security.privileged=true -c security.nesting=true 
 
@@ -107,7 +108,7 @@ lxc restart $INSTANCENAME
 sleep 5
 
 msg "Executing homeassistant supervised-installer..."
-lxc-cmd /bin/bash -c "curl -sSL https://raw.githubusercontent.com/home-assistant/supervised-installer/master/installer.sh | bash -s -- -m qemuarm-64"
+lxc-cmd /bin/bash -c "curl -sSL https://raw.githubusercontent.com/home-assistant/supervised-installer/master/installer.sh | bash -s -- -m $MACHINE_TYPE"
     
 sleep 5
 
