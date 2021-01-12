@@ -58,6 +58,11 @@ lxc.cgroup.devices.allow = a
 lxc.cap.drop =
 lxc.apparmor.profile=unconfined
 EOF
+
+#This is anther raw.lxc setting - be carefull with this - it needs additional steps for mounting zigbee-sticks automatically otherwise you'll run into plenty of errors
+#using lxd devices is a much better way:
+#--> lxc config device add $INSTANCENAME ttyACM0 unix-char path=/dev/ttyACM0
+#--> lxc config device set $INSTANCENAME ttyACM0 mode 666
 #lxc.mount.auto=proc:rw sys:rw
 
 # Load modules for Docker before starting LXC
