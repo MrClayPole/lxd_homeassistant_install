@@ -6,11 +6,9 @@ TLDR: This is not aimed just at Proxmox but a generic debian based install (only
 
 ## Current state:
 
-Adjust MACHINE_TYPE manually ... currently its hardcoded to 'qemuarm-64' and there's no prompt since this is still in development and not finished. It currently completes successfully - select N upon install to keep network connectivity after reboot (overwriting will remove eth0 and hence the internet connectivity). 
+**Adjust MACHINE_TYPE manually before install** ... currently its hardcoded to 'qemuarm-64' and there's no prompt since this is still in development and not finished. It currently completes successfully - select N upon install to keep network connectivity after reboot (overwriting will remove eth0 and hence the internet connectivity). 
 
-However after stopping and restarting the LXC container some docker containers (DNS, Multicast, ...) itself seem to exit with code 0, without any logs attached.
-
-This has still to be solved. Maybe it's a better idea to rewrite HassOS Buildroot base to something like https://github.com/Linutronix/elbe to get a minimal Debian system as the base where you can properly install other packages in addition to Hass.io. LXD/LXC would be nice to have, especially for the snapshots (that are more reliable then those that are inbuild, particularly since it stops/freezes the container before snapshotting and restarts it afterwards - so no Database corruption will happen) but it could be that Docker is just to much pain on LXC (I've already included the overlay kernel module for the container, maybe there are some others missing). Will have to verify ...
+Maybe it's a better idea to rewrite HassOS Buildroot base to something like https://github.com/Linutronix/elbe to get a minimal Debian system as the base where you can properly install other packages in addition to Hass.io ...
 
 ## Known issues:
 
