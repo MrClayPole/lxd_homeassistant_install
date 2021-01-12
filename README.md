@@ -6,7 +6,7 @@ TLDR: This is not aimed just at Proxmox but a generic debian based install (only
 
 ## Current state:
 
-This is hardcoded to aarch64 for now. You need to modify the script (simply changing the machine-type) for other architectures. It currently completes successfully - select N upon install to keep network connectivity after reboot (overwriting will remove eth0 and hence the internet connectivity). 
+Adjust MACHINE_TYPE manually ... currently its hardcoded to 'qemuarm-64' and there's no prompt since this is still in development and not finished. It currently completes successfully - select N upon install to keep network connectivity after reboot (overwriting will remove eth0 and hence the internet connectivity). 
 
 However after stopping and restarting the LXC container some docker containers (DNS, Multicast, ...) itself seem to exit with code 0, without any logs attached.
 
