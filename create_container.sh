@@ -44,12 +44,13 @@ pushd $TEMP_DIR >/dev/null
 
 #TODO add routine for skipping the launch and/or reinstalling
 
-OSTYPE=images
-OSVERSION=debian/buster
+OSTYPE=ubuntu
+OSVERSION=20.04
 INSTANCENAME=homeassistant
-MACHINE_TYPE=qemuarm-64
+MACHINE_TYPE=x86_64
+LXCPROFILE=default
 
-lxc launch $OSTYPE:$OSVERSION $INSTANCENAME -c security.privileged=true -c security.nesting=true 
+lxc launch $OSTYPE:$OSVERSION $INSTANCENAME -c security.privileged=true -c security.nesting=true -p $LXCPROFILE
 
 # Modify LXC permissions to support Docker
 alias lxc-set-config="lxc config set $INSTANCENAME"
